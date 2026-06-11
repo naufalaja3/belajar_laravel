@@ -1,91 +1,92 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-bs-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-
-    {{-- @yield('title') akan diisi oleh halaman turunan --}}
-    <title>@yield('title', 'Aplikasi Laravel') | Belajar Laravel</title>
-
-    {{-- Vite akan mengelola aset CSS dan JS --}}
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-    {{-- Slot untuk CSS tambahan khusus halaman tertentu --}}
+    <title>@yield('title', 'Belajar Laravel') | Belajar Laravel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        * { transition: background-color 0.3s ease, color 0.3s ease; }
+        .card:hover { transform: translateY(-5px); transition: transform 0.3s ease; }
+        footer { margin-top: auto; }
+        body { display: flex; flex-direction: column; min-height: 100vh; }
+        .main-content { flex: 1; }
+    </style>
     @stack('styles')
 </head>
 <body>
-    {{-- ===== NAVIGASI ===== --}}
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand fw-bold text-danger" href="{{ url('/')
-}}">
 
-�
-�
- Belajar Laravel
+    {{-- Navbar --}}
+    <nav class="navbar navbar-expand-lg bg-danger navbar-dark shadow">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">
+                🎓 Belajar Laravel
             </a>
-            <button class="navbar-toggler" type="button"
-data-bs-toggle="collapse"
-                    data-bs-target="#navbarMain">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarMain">
-                <ul class="navbar-nav ms-auto">
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url('/') }}">Beranda</a>
+                        <a class="nav-link {{ request()->is('/') ? 'active fw-bold' : '' }}" href="/">Beranda</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('tentang')
-}}">Tentang</a>
+                        <a class="nav-link {{ request()->is('tentang') ? 'active fw-bold' : '' }}" href="/tentang">Tentang</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('kontak')
-}}">Kontak</a>
+                        <a class="nav-link {{ request()->is('portofolio') ? 'active fw-bold' : '' }}" href="/portofolio">Portofolio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->is('blog') ? 'active fw-bold' : '' }}" href="/blog">Blog</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->is('kontak') ? 'active fw-bold' : '' }}" href="/kontak">Kontak</a>
                     </li>
                 </ul>
+                <button id="darkModeToggle" class="btn btn-sm btn-outline-light">
+                    🌙 Dark Mode
+                </button>
             </div>
         </div>
     </nav>
 
-    {{-- ===== KONTEN UTAMA ===== --}}
-    <main class="container my-4">
-        {{-- Flash message untuk notifikasi --}}
-        @if (session('success'))
-            <div class="alert alert-success alert-dismissible fade show"
-role="alert">
-                {{ session('success') }}
-                <button type="button" class="btn-close"
-data-bs-dismiss="alert"></button>
-            </div>
-        @endif
-
-        @if (session('error'))
-            <div class="alert alert-danger alert-dismissible fade show"
-role="alert">
-                {{ session('error') }}
-                <button type="button" class="btn-close"
-data-bs-dismiss="alert"></button>
-            </div>
-        @endif
-
-        {{-- @yield('content') akan diisi oleh konten halaman turunan --}}
+    {{-- Konten Utama --}}
+    <div class="main-content container py-4">
         @yield('content')
-    </main>
+    </div>
 
-    {{-- ===== FOOTER ===== --}}
-    <footer class="bg-dark text-light py-4 mt-5">
-        <div class="container text-center">
-            <p class="mb-0">
-                &copy; {{ date('Y') }} Belajar Laravel. Dibuat dengan
-❤
-
-menggunakan Laravel 13.
-            </p>
-            </div>
+    {{-- Footer --}}
+    <footer class="bg-dark text-white text-center py-3 mt-4">
+        <div class="container">
+            <p class="mb-0">© 2024/2025 Belajar Laravel — Modul Praktikum</p>
+        </div>
     </footer>
 
-    {{-- Slot untuk JavaScript tambahan khusus halaman tertentu --}}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
     @stack('scripts')
+
+    <script>
+        // Terapkan dark mode dari localStorage saat halaman dimuat
+        const savedMode = localStorage.getItem('darkMode');
+        const toggleBtn = document.getElementById('darkModeToggle');
+        if (savedMode === 'dark') {
+            document.documentElement.setAttribute('data-bs-theme', 'dark');
+            toggleBtn.textContent = '☀️ Light Mode';
+        }
+
+        toggleBtn.addEventListener('click', function () {
+            const html = document.documentElement;
+            if (html.getAttribute('data-bs-theme') === 'dark') {
+                html.setAttribute('data-bs-theme', 'light');
+                localStorage.setItem('darkMode', 'light');
+                this.textContent = '🌙 Dark Mode';
+            } else {
+                html.setAttribute('data-bs-theme', 'dark');
+                localStorage.setItem('darkMode', 'dark');
+                this.textContent = '☀️ Light Mode';
+            }
+        });
+    </script>
 </body>
-</html> 
+</html>
